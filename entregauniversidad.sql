@@ -113,3 +113,40 @@ LEFT JOIN asignatura
 ON profesor.id_profesor = asignatura.id_profesor
 WHERE asignatura.nombre IS NULL;
 
+
+-- *******************************break point CONSULTES RESUM**********************
+-- 01 Retorna el nombre total d'alumnes que hi ha.
+SELECT DISTINCT persona.id,  persona.nombre , persona.apellido1 , persona.apellido2 FROM persona
+WHERE persona.tipo = 'alumno';
+-- 02 Calcula quants alumnes van néixer en 1999.
+SELECT COUNT(persona.fecha_nacimiento) FROM persona
+WHERE fecha_nacimiento BETWEEN '1999-01-01' AND '1999-12-31'
+AND persona.tipo = 'alumno';
+-- 03 Calcula quants professors hi ha en cada departament. El resultat només ha de mostrar dues columnes, una amb el nom del departament i una altra amb el nombre de professors que hi ha en aquest departament. El resultat només ha d'incloure els departaments que tenen professors associats i haurà d'estar ordenat de major a menor pel nombre de professors.
+SELECT departamento.nombre, persona.nombre  FROM persona
+LEFT JOIN profesor
+ON persona.id = profesor.id_profesor
+LEFT JOIN departamento
+ON profesor.id_departamento = departamento.id
+WHERE persona.tipo = "profesor"
+ORDER BY persona.nombre ASC;
+-- 04 Retorna un llistat amb tots els departaments i el nombre de professors que hi ha en cadascun d'ells. Tingui en compte que poden existir departaments que no tenen professors associats. Aquests departaments també han d'aparèixer en el llistat.
+ SELECT departamento.nombre AS departamento, persona.apellido1, persona.nombre  FROM departamento
+LEFT JOIN profesor
+ON departamento.id = profesor.id_departamento
+LEFT JOIN persona
+ON profesor.id_profesor =persona.id;
+-- 05 Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun. Tingui en compte que poden existir graus que no tenen assignatures associades. Aquests graus també han d'aparèixer en el llistat. El resultat haurà d'estar ordenat de major a menor pel nombre d'assignatures.
+SELECT grado.nombre AS grado, asignatura.nombre AS asignatura FROM grado
+LEFT JOIN asignatura
+ON grado.id = asignatura.id_grado
+ORDER BY  asignatura.nombre DESC;
+
+-- OJITO NO FUNCIONA
+-- 06 Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun, dels graus que tinguin més de 40 assignatures associades.
+-- SELECT grado.nombre AS grado, asignatura.nombre AS asignatura , grado.id FROM grado
+-- SELECT COUNT(grado.nombre) FROM grado
+-- LEFT JOIN asignatura
+-- ON grado.id = asignatura.id_grado
+-- WHERE grado.id = 4
+-- WHERE COUNT(grado.id) > 40
