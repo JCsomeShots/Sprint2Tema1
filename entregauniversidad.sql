@@ -141,12 +141,52 @@ SELECT grado.nombre AS grado, asignatura.nombre AS asignatura FROM grado
 LEFT JOIN asignatura
 ON grado.id = asignatura.id_grado
 ORDER BY  asignatura.nombre DESC;
-
--- OJITO NO FUNCIONA
 -- 06 Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun, dels graus que tinguin més de 40 assignatures associades.
--- SELECT grado.nombre AS grado, asignatura.nombre AS asignatura , grado.id FROM grado
--- SELECT COUNT(grado.nombre) FROM grado
--- LEFT JOIN asignatura
--- ON grado.id = asignatura.id_grado
--- WHERE grado.id = 4
--- WHERE COUNT(grado.id) > 40
+SELECT  distinct grado.nombre, count(asignatura.nombre) FROM grado
+LEFT JOIN asignatura
+ON grado.id = asignatura.id_grado
+GROUP BY grado.nombre
+HAVING count(asignatura.nombre) > 40;
+-- 07 Retorna un llistat que mostri el nom dels graus i la suma del nombre total de crèdits que hi ha per a cada tipus d'assignatura. El resultat ha de tenir tres columnes: nom del grau, tipus d'assignatura i la suma dels crèdits de totes les assignatures que hi ha d'aquest tipus.
+SELECT  distinct grado.nombre, asignatura.tipo , sum(asignatura.creditos) FROM grado
+LEFT JOIN asignatura
+ON grado.id = asignatura.id_grado
+GROUP BY grado.nombre , asignatura.tipo;
+-- 08 Retorna un llistat que mostri quants alumnes s'han matriculat d'alguna assignatura en cadascun dels cursos escolars. El resultat haurà de mostrar dues columnes, una columna amb l'any d'inici del curs escolar i una altra amb el nombre d'alumnes matriculats.
+SELECT distinct anyo_inicio, count(DISTINCT persona.id) FROM curso_escolar
+LEFT JOIN alumno_se_matricula_asignatura as alum
+ON curso_escolar.id = alum.id_curso_escolar
+LEFT JOIN persona 
+ON alum.id_alumno = persona.id
+GROUP BY curso_escolar.anyo_inicio;
+-- 09 Retorna un llistat amb el nombre d'assignatures que imparteix cada professor. El llistat ha de tenir en compte aquells professors que no imparteixen cap assignatura. El resultat mostrarà cinc columnes: id, nom, primer cognom, segon cognom i nombre d'assignatures. El resultat estarà ordenat de major a menor pel nombre d'assignatures.
+SELECT persona.id, persona.nombre, persona.apellido1, persona.apellido2, asignatura.nombre FROM persona
+LEFT JOIN profesor
+ON persona.id = profesor.id_profesor
+LEFT JOIN asignatura
+ON profesor.id_profesor = asignatura.id_profesor
+WHERE persona.tipo = 'profesor'
+ORDER BY asignatura.nombre DESC;
+
+-- OJITO NO FUNCIONA "DEL TODO", no lo realiza de manera automática
+-- 10 Retorna totes les dades de l'alumne més jove.
+SELECT distinct * FROM persona
+LEFT JOIN alumno_se_matricula_asignatura as alum
+ON persona.id = alum.id_alumno
+LEFT JOIN asignatura
+ON alum.id_asignatura = asignatura.id
+ORDER BY fecha_nacimiento DESC 
+LIMIT 3;
+
+
+-- 11 Retorna un llistat amb els professors que tenen un departament associat i que no imparteixen cap assignatura.
+SELECT  persona.nombre, persona.apellido1, departamento.nombre AS departamento , asignatura.nombre AS asignatura 
+FROM persona
+LEFT JOIN profesor
+ON persona.id = profesor.id_profesor
+LEFT JOIN departamento
+ON profesor.id_departamento = departamento.id
+LEFT JOIN asignatura
+ON profesor.id_profesor = asignatura.id_profesor
+WHERE persona.tipo = 'profesor'
+AND asignatura.nombre IS NULL;
