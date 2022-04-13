@@ -30,13 +30,13 @@ RIGHT(UPPER(nombre),2)
 FROM fabricante;
 -- 09 Llista els noms i els preus de tots els productos de la taula producto, arrodonint el valor del preu.
 SELECT nombre,
-CONCAT(FLOOR(precio) , "€") AS 'precio €' , 
-CONCAT(FLOOR(precio * 1.13), "$") AS 'precio USD'
+CONCAT(ROUND(precio) , "€") AS 'precio €' , 
+CONCAT(ROUND(precio * 1.13), "$") AS 'precio USD'
 FROM producto; 
 -- 10 Llista els noms i els preus de tots els productos de la taula producto, truncant el valor del preu per a mostrar-lo sense cap xifra decimal.
 SELECT nombre,
-ROUND(precio, 0)AS 'precio €' , 
-ROUND((precio * 1.13)  , 0)AS 'precio USD'
+TRUNCATE(precio, 0)AS 'precio €' , 
+TRUNCATE((precio * 1.13)  , 0)AS 'precio USD'
 FROM producto; 
 -- 11 Llista el codi dels fabricants que tenen productos en la taula producto.
 SELECT codigo_fabricante , nombre FROM producto;
@@ -57,7 +57,7 @@ SELECT nombre , CONCAT(precio , "€") FROM producto ORDER BY precio ASC LIMIT 1
 -- 19 Llista el nom i el preu del producto més car. (Utilitzi solament les clàusules ORDER BY i LIMIT). NOTA: Aquí no podria usar MAX(preu), necessitaria GROUP BY.
 SELECT nombre , CONCAT(precio , "€") FROM producto ORDER BY precio DESC LIMIT 1;
 -- 20 Llista el nom de tots els productos del fabricant el codi de fabricant del qual és igual a 2.
-SELECT codigo_fabricante , nombre FROM producto WHERE codigo_fabricante = 2;
+SELECT nombre FROM producto WHERE codigo_fabricante = 2;
 -- 21 Retorna una llista amb el nom del producte, preu i nom de fabricant de tots els productes de la base de dades.
 SELECT producto.nombre , precio , fabricante.nombre AS fabricante FROM producto
 INNER JOIN fabricante
@@ -105,13 +105,13 @@ INNER JOIN fabricante
 ON fabricante.codigo = producto.codigo_fabricante
 WHERE fabricante.codigo IN (1,3,5);
 -- 30 Retorna un llistat amb el nom i el preu de tots els productes dels fabricants el nom dels quals acabi per la vocal e.
-SELECT producto.nombre , fabricante.nombre AS Fabricante FROM producto
+SELECT producto.nombre, producto.precio , fabricante.nombre AS Fabricante FROM producto
 INNER JOIN fabricante
 ON fabricante.codigo = producto.codigo_fabricante
 WHERE fabricante.nombre
 LIKE '%e';
 -- 31 Retorna un llistat amb el nom i el preu de tots els productes el nom de fabricant dels quals contingui el caràcter w en el seu nom.
-SELECT producto.nombre , fabricante.nombre AS Fabricante FROM producto
+SELECT producto.nombre, producto.precio , fabricante.nombre AS Fabricante FROM producto
 INNER JOIN fabricante
 ON fabricante.codigo = producto.codigo_fabricante
 WHERE fabricante.nombre
@@ -127,6 +127,7 @@ SELECT DISTINCT fabricante.codigo ,  fabricante.nombre AS Fabridante FROM fabric
 INNER JOIN producto
 ON  producto.codigo_fabricante = fabricante.codigo
 WHERE producto.codigo_fabricante;
+-- sin cambios 
 -- 34 Retorna un llistat de tots els fabricants que existeixen en la base de dades, juntament amb els productes que té cadascun d'ells. El llistat haurà de mostrar també aquells fabricants que no tenen productes associats.
 SELECT DISTINCT fabricante.nombre AS Fabridante , producto.nombre FROM fabricante
 LEFT JOIN producto
