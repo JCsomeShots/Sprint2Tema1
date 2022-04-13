@@ -29,7 +29,7 @@ ON profesor.id_departamento = departamento.id
 WHERE persona.tipo = 'profesor'
 ORDER BY persona.apellido1 , persona.nombre ASC; 
 -- 07 Retorna un llistat amb el nom de les assignatures, any d'inici i any de fi del curs escolar de l'alumne amb nif 26902806M.
-SELECT persona.nif, persona.nombre, persona.apellido1, asignatura.nombre as 'asignatura', curso_escolar.anyo_inicio , curso_escolar.anyo_fin  FROM asignatura 
+SELECT persona.nif, persona.nombre, persona.apellido1, asignatura.nombre as 'asignatura'  FROM asignatura 
 left join alumno_se_matricula_asignatura as alum
 on asignatura.id = alum.id_asignatura
 left join curso_escolar 
@@ -116,12 +116,13 @@ WHERE asignatura.nombre IS NULL;
 
 -- *******************************break point CONSULTES RESUM**********************
 -- 01 Retorna el nombre total d'alumnes que hi ha.
-SELECT DISTINCT persona.id,  persona.nombre , persona.apellido1 , persona.apellido2 FROM persona
+SELECT DISTINCT COUNT(persona.id) FROM persona
 WHERE persona.tipo = 'alumno';
 -- 02 Calcula quants alumnes van néixer en 1999.
 SELECT COUNT(persona.fecha_nacimiento) FROM persona
 WHERE fecha_nacimiento BETWEEN '1999-01-01' AND '1999-12-31'
 AND persona.tipo = 'alumno';
+--TO CHECK
 -- 03 Calcula quants professors hi ha en cada departament. El resultat només ha de mostrar dues columnes, una amb el nom del departament i una altra amb el nombre de professors que hi ha en aquest departament. El resultat només ha d'incloure els departaments que tenen professors associats i haurà d'estar ordenat de major a menor pel nombre de professors.
 SELECT departamento.nombre, persona.nombre  FROM persona
 LEFT JOIN profesor
