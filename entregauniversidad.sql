@@ -46,16 +46,8 @@ LEFT JOIN asignatura
 ON profesor.id_profesor = asignatura.id_profesor
 LEFT JOIN grado
 ON asignatura.id_grado = grado.id
-WHERE grado.id = 4;
--- validación
--- SELECT persona.nombre, grado.nombre FROM persona
--- LEFT JOIN profesor
--- ON persona.id = profesor.id_profesor
--- LEFT JOIN asignatura
--- ON profesor.id_profesor = asignatura.id_profesor
--- LEFT JOIN grado
--- ON asignatura.id_grado = grado.id
--- WHERE grado.id = 4;
+WHERE grado.nombre = 'Grado en Ingeniería Informática (Plan 2015)'
+GROUP BY departamento.nombre;
 -- 09 Retorna un llistat amb tots els alumnes que s'han matriculat en alguna assignatura durant el curs escolar 2018/2019.
 SELECT DISTINCT persona.nombre , persona.apellido1 , persona.apellido2, curso_escolar.anyo_inicio, curso_escolar.anyo_fin FROM persona
 LEFT JOIN alumno_se_matricula_asignatura
@@ -63,7 +55,7 @@ ON persona.id = alumno_se_matricula_asignatura.id_alumno
 LEFT JOIN curso_escolar
 ON alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id
 WHERE persona.tipo = 'alumno'
-AND curso_escolar.id = 5;
+AND curso_escolar.anyo_inicio = 2018;
 
 
 -- *******************************break point LEFT JOIN i RIGHT JOIN.**********************
@@ -73,9 +65,10 @@ LEFT JOIN profesor
 ON persona.id = profesor.id_profesor
 LEFT JOIN departamento
 ON profesor.id_departamento = departamento.id
+WHERE 	persona.tipo = 'profesor'
 ORDER BY departamento.nombre,  persona.apellido1, persona.apellido2, persona.nombre ASC;
 -- 02 Retorna un llistat amb els professors que no estan associats a un departament.
-SELECT departamento.nombre AS 'departamento', persona.apellido1, persona.apellido2 , persona.nombre  FROM persona
+SELECT persona.apellido1, persona.apellido2 , persona.nombre  FROM persona
 LEFT JOIN profesor
 ON persona.id = profesor.id_profesor
 LEFT JOIN departamento
@@ -132,11 +125,12 @@ ON profesor.id_departamento = departamento.id
 WHERE persona.tipo = "profesor"
 ORDER BY persona.nombre ASC;
 -- 04 Retorna un llistat amb tots els departaments i el nombre de professors que hi ha en cadascun d'ells. Tingui en compte que poden existir departaments que no tenen professors associats. Aquests departaments també han d'aparèixer en el llistat.
- SELECT departamento.nombre AS departamento, persona.apellido1, persona.nombre  FROM departamento
+ SELECT departamento.nombre AS departamento, COUNT( profesor.id_departamento ) AS profesores  FROM departamento
 LEFT JOIN profesor
 ON departamento.id = profesor.id_departamento
 LEFT JOIN persona
-ON profesor.id_profesor =persona.id;
+ON profesor.id_profesor =persona.id
+GROUP BY departamento.id;
 -- 05 Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun. Tingui en compte que poden existir graus que no tenen assignatures associades. Aquests graus també han d'aparèixer en el llistat. El resultat haurà d'estar ordenat de major a menor pel nombre d'assignatures.
 SELECT grado.nombre AS grado, asignatura.nombre AS asignatura FROM grado
 LEFT JOIN asignatura
@@ -161,12 +155,13 @@ LEFT JOIN persona
 ON alum.id_alumno = persona.id
 GROUP BY curso_escolar.anyo_inicio;
 -- 09 Retorna un llistat amb el nombre d'assignatures que imparteix cada professor. El llistat ha de tenir en compte aquells professors que no imparteixen cap assignatura. El resultat mostrarà cinc columnes: id, nom, primer cognom, segon cognom i nombre d'assignatures. El resultat estarà ordenat de major a menor pel nombre d'assignatures.
-SELECT persona.id, persona.nombre, persona.apellido1, persona.apellido2, asignatura.nombre FROM persona
-LEFT JOIN profesor
+SELECT persona.id, persona.nombre, persona.apellido1, persona.apellido2, COUNT (asignatura.id) AS asignaturas FROM persona
+JOIN profesor
 ON persona.id = profesor.id_profesor
 LEFT JOIN asignatura
 ON profesor.id_profesor = asignatura.id_profesor
 WHERE persona.tipo = 'profesor'
+GROUP BY profesor.id_profesor
 ORDER BY asignatura.nombre DESC;
 
 -- OJITO NO FUNCIONA "DEL TODO", no lo realiza de manera automática
