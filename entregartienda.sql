@@ -175,15 +175,16 @@ SELECT  precio FROM producto
 WHERE fabricante.nombre = 'Lenovo'
 ORDER BY precio DESC LIMIT 1
 ); 
--- No funciona
 -- 41 Llesta tots els productes del fabricant Asus que tenen un preu superior al preu mitjà de tots els seus productes.
 SELECT producto.nombre , producto.precio, fabricante.nombre FROM producto
 INNER JOIN fabricante
 ON  producto.codigo_fabricante = fabricante.codigo
-WHERE fabricante.codigo = 1
+WHERE fabricante.nombre = 'Asus'
 AND precio > (
 SELECT avg(all producto.precio) FROM producto
-WHERE codigo_fabricante = 1
+INNER JOIN fabricante
+ON  producto.codigo_fabricante = fabricante.codigo
+WHERE fabricante.nombre = 'Asus'
 );
 
 
