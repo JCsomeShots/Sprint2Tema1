@@ -90,6 +90,7 @@ ON profesor.id_departamento = asignatura.id_profesor
 WHERE persona.tipo = 'profesor'
 AND asignatura.nombre IS NULL
 ORDER BY persona.apellido1 ASC;
+-- no entiendo cuál es el resultado esperado
 -- 05 Retorna un llistat amb les assignatures que no tenen un professor assignat.
 SELECT  asignatura.nombre AS 'asignatura',  persona.apellido1 AS 'apellido_profesor' FROM asignatura
 LEFT JOIN profesor
@@ -132,10 +133,11 @@ LEFT JOIN persona
 ON profesor.id_profesor =persona.id
 GROUP BY departamento.id;
 -- 05 Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun. Tingui en compte que poden existir graus que no tenen assignatures associades. Aquests graus també han d'aparèixer en el llistat. El resultat haurà d'estar ordenat de major a menor pel nombre d'assignatures.
-SELECT grado.nombre AS grado, asignatura.nombre AS asignatura FROM grado
+SELECT grado.nombre AS grado , COUNT(asignatura.nombre) AS asignaturas FROM grado
 LEFT JOIN asignatura
 ON grado.id = asignatura.id_grado
-ORDER BY  asignatura.nombre DESC;
+GROUP BY grado.nombre
+ORDER BY  COUNT(asignatura.nombre) DESC;
 -- 06 Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun, dels graus que tinguin més de 40 assignatures associades.
 SELECT  distinct grado.nombre, count(asignatura.nombre) FROM grado
 LEFT JOIN asignatura
